@@ -8,7 +8,7 @@ publishes stats to [Instrumental](https://instrumentalapp.com).
 ## Requirements
 
 * [StatsD][statsd] versions >= 0.3.0.
-* An [Instrumental](https://https://instrumentalapp.com/plans) account.
+* An [Instrumental](https://instrumentalapp.com/plans) account.
 
 ## Installation
 
