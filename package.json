@@ -2,7 +2,7 @@
   "author": "Chris Gaffney <chris@collectiveidea.com>",
   "name": "statsd-instrumental-backend",
   "description": "A StatsD backend for Instrumental",
-  "version": "0.9.1",
+  "version": "0.10.0",
   "homepage": "https://github.com/collectveidea/statsd-instrumental-backend",
   "repository": {
     "type": "git",
