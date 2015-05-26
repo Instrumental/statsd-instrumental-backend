@@ -18,5 +18,9 @@
   },
   "dependencies": {},
   "devDependencies": {},
-  "main": "lib/instrumental.js"
+  "main": "lib/instrumental.js",
+  "directories": {
+    "lib": "lib",
+    "certs": "certs"
+  }
 }
