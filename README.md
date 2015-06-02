@@ -1,5 +1,7 @@
 # StatsD Instrumental backend
 
+NOTE: This repository has moved from [collectiveidea](https://github.com/collectiveidea) to [expectedbehavior](https://github.com/expectedbehavior). 
+
 ## Overview
 
 This is a pluggable backend for [StatsD][statsd], which
@@ -8,7 +10,7 @@ publishes stats to [Instrumental](https://instrumentalapp.com).
 ## Requirements
 
 * [StatsD][statsd] versions >= 0.3.0.
-* An [Instrumental](https://instrumentalapp.com/plans) account.
+* An [Instrumental](https://instrumentalapp.com) account.
 
 ## Installation
 
