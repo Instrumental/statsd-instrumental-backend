@@ -25,7 +25,10 @@ StatsD config file.
 ```js
 {
   instrumental: {
-    key: "[application api key]"
+    key: "[application api key]", // REQUIRED
+    secure: true,                 // OPTIONAL (boolean), whether or not to use secure protocol to connect to Instrumental, default true
+    verify_cert: true,            // OPTIONAL (boolean), should we attempt to verify the server certificate before allowing communication, default true
+    timeout: 10000                // OPTIONAL (integer), number of milliseconds to wait for establishing a connection to Instrumental before giving up, default 10s
   }
 }
 ```
