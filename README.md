@@ -50,7 +50,7 @@ None
 
 ## Development
 
-- [Instrumental Backend](https://github.com/collectiveidea/statsd-instrumental-backend)
+- [Instrumental Backend](https://github.com/expectedbehavior/statsd-instrumental-backend)
 
 Contributing:
 
