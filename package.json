@@ -3,10 +3,10 @@
   "name": "statsd-instrumental-backend",
   "description": "A StatsD backend for Instrumental",
   "version": "0.11.0",
-  "homepage": "https://github.com/collectveidea/statsd-instrumental-backend",
+  "homepage": "https://github.com/expectedbehavior/statsd-instrumental-backend",
   "repository": {
     "type": "git",
-    "url": "git://github.com/collectiveidea/statsd-instrumental-backend.git"
+    "url": "git://github.com/expectedbehavior/statsd-instrumental-backend.git"
   },
   "keywords": [
     "instrumental",
