@@ -1,5 +1,7 @@
 # StatsD Instrumental backend
 
+NOTE: This repository has moved from [collectiveidea](https://github.com/collectiveidea) to [expectedbehavior](https://github.com/expectedbehavior). 
+
 ## Overview
 
 This is a pluggable backend for [StatsD][statsd], which
@@ -8,7 +10,7 @@ publishes stats to [Instrumental](https://instrumentalapp.com).
 ## Requirements
 
 * [StatsD][statsd] versions >= 0.3.0.
-* An [Instrumental](https://instrumentalapp.com/plans) account.
+* An [Instrumental](https://instrumentalapp.com) account.
 
 ## Installation
 
@@ -23,7 +25,10 @@ StatsD config file.
 ```js
 {
   instrumental: {
-    key: "[application api key]"
+    key: "[application api key]", // REQUIRED
+    secure: true,                 // OPTIONAL (boolean), whether or not to use secure protocol to connect to Instrumental, default true
+    verify_cert: true,            // OPTIONAL (boolean), should we attempt to verify the server certificate before allowing communication, default true
+    timeout: 10000                // OPTIONAL (integer), number of milliseconds to wait for establishing a connection to Instrumental before giving up, default 10s
   }
 }
 ```
@@ -48,7 +53,7 @@ None
 
 ## Development
 
-- [Instrumental Backend](https://github.com/collectiveidea/statsd-instrumental-backend)
+- [Instrumental Backend](https://github.com/expectedbehavior/statsd-instrumental-backend)
 
 Contributing:
 
