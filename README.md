@@ -1,6 +1,6 @@
 # StatsD Instrumental backend
 
-NOTE: This repository has moved from [collectiveidea](https://github.com/collectiveidea) to [expectedbehavior](https://github.com/expectedbehavior). 
+NOTE: This repository has moved from [collectiveidea](https://github.com/collectiveidea) to [expectedbehavior](https://github.com/expectedbehavior).
 
 ## Overview
 
@@ -19,7 +19,9 @@ publishes stats to [Instrumental](https://instrumentalapp.com).
 
 ## Configuration
 
-You have to add the following basic configuration information to your
+See our [example config file](exampleConfig.js) for a complete StatsD configuration.
+
+Otherwise, add the following basic configuration information to your
 StatsD config file.
 
 ```js
@@ -35,7 +37,9 @@ StatsD config file.
 
 ## Enabling
 
-Add `statsd-instrumental-backend` backend to the list of StatsD
+This is already done if you are using our [example configuration](exampleConfig.js).
+
+Otherwise, add `statsd-instrumental-backend` backend to the list of StatsD
 backends in the StatsD configuration file:
 
 ```js
