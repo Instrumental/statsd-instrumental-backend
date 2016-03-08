@@ -2,7 +2,7 @@
 Example StatsD configuration for sending metrics to Instrumental.
 See the offical Statsd exampleConfig.js for more StatsD options.
 */
-{
+exports.config = {
  port: 8125
 , backends: ["statsd-instrumental-backend" ]
 , debug: false
