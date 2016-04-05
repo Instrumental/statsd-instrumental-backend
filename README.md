@@ -1,6 +1,5 @@
 # StatsD Instrumental backend
 
-NOTE: This repository has moved from [collectiveidea](https://github.com/collectiveidea) to [expectedbehavior](https://github.com/expectedbehavior).
 
 ## Overview
 
