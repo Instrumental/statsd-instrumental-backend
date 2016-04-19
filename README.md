@@ -1,10 +1,11 @@
-# StatsD Instrumental backend
+# StatsD Instrumental Backend
 
 
 ## Overview
 
-This is a pluggable backend for [StatsD][statsd], which
-publishes stats to [Instrumental](https://instrumentalapp.com).
+Instrumental is a [application monitoring platform](https://instrumentalapp.com) built for developers who want a better understanding of their production software. Powerful tools, like the [Instrumental Query Language](https://instrumentalapp.com/docs/query-language), combined with an exploration-focused interface allow you to get real answers to complex questions, in real-time.
+
+This is a pluggable StatsD backend for sending metrics to Instrumental.
 
 ## Requirements
 
