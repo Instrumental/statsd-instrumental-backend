@@ -1,6 +1,4 @@
 var test = require('tape');
-// import 'core-js'
-//import { build_payload } from "../lib/instrumental.js";
 var instrumental = require("../lib/instrumental.js");
 var config = require("../exampleConfig.js").config;
 

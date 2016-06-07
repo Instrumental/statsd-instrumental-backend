@@ -1,0 +1,12 @@
+#!/bin/sh
+set -e
+cd "`dirname \"$0\"`/.."
+
+brew update
+which npm || which node || brew install npm
+
+npm install tape
+npm install faucet
+npm install statsd
+
+ln -s . node_modules/statsd-instrumental-backend
