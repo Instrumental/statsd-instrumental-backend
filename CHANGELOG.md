@@ -1,3 +1,6 @@
+### 0.11.3 [December 8th, 2016]
+* Add metricPrefix option, which will be added to all of your metrics (with a "." to seperate them)
+
 ### 0.11.2 [March 28th, 2016]
 * Add recordCounterRates option for users who wish to ignore .rate metrics on counters
 
