@@ -53,3 +53,21 @@ test('metricPrefix is used if present in configuration', function (t) {
 
   t.end();
 });
+
+test('metricPrefix ending with dots wont send double dots', function (t) {
+  var metrics = {
+    counters: { 'my.test.1': 2805 }
+  };
+
+  var now = Math.round(new Date().getTime() / 1000);
+  var dummy_events =  { on: function(e){ } };
+
+  config.instrumental.metricPrefix = "testprefix.";
+  instrumental.init(now, config, dummy_events)
+
+  var payload = instrumental.build_payload(metrics);
+
+   t.assert(payload.indexOf("increment testprefix.my.test.1 2805 ") > -1, "Metric name was not prefixed properly (got " + JSON.stringify(payload) + ")")
+
+  t.end();
+});
