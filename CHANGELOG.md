@@ -1,3 +1,6 @@
+### 0.11.4 [December 9th, 2016]
+* Fix a bug that caused `metricPrefix` to not always be applied.
+
 ### 0.11.3 [December 8th, 2016]
 * Add `metricPrefix` option, which will be added to all of your metrics (with a "." to seperate them)
 
