@@ -1,0 +1,7 @@
+#!/bin/bash
+set -e
+cd "$(dirname "$0")/.."
+
+type node > /dev/null || brew install node
+
+npm install

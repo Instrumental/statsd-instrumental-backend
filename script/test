@@ -1,2 +1,2 @@
 #!/bin/sh
-tape test/*.js | faucet
+$(npm bin)/tape test/*.js | $(npm bin)/faucet

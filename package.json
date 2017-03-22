@@ -8,6 +8,7 @@
     "type": "git",
     "url": "git://github.com/expectedbehavior/statsd-instrumental-backend.git"
   },
+  "license": "mit",
   "keywords": [
     "instrumental",
     "metrics",
@@ -17,7 +18,10 @@
     "node": ">=0.8"
   },
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "tape": "4.6.3",
+    "faucet": "0.0.1"
+  },
   "main": "lib/instrumental.js",
   "directories": {
     "lib": "lib",
