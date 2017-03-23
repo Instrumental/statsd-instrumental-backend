@@ -73,17 +73,18 @@ test('regex filters work as expected, include only', function (t) {
   metrics = {
     counters: { 'has.some.dots': 100 },
     counter_rates: { 'has.some.dots.rate': 10 },
-    gauges: { 'has_no_dots': 100 },
+    gauges: { 'has_no_dots': 100,
+              'is_special_but_has_no_dots': 10 },
     sets: { 'this.set.has.dots': ['1','2','3'] }
   };
 
   config.instrumental.metricFiltersExclude = [];
-  config.instrumental.metricFiltersInclude = [/\./];
+  config.instrumental.metricFiltersInclude = [/\./, /special/];
 
   instrumental.init(now, config, dummy_events);
   payload = instrumental.build_payload(metrics);
 
-  t.assert(payload.length === 3);
+  t.assert(payload.length === 4);
   payload.map(function(item){
     t.assert(item.split(' ')[1] !== 'has_no_dots')
   })

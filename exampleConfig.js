@@ -14,6 +14,6 @@ exports.config = {
     recordCounterRates: true, // OPTIONAL (boolean) whether or not to send ".rate" metrics with counters, default true
     metricPrefix: "", // OPTIONAL (string) this will be prepended (with a dot) to ALL of your metrics
     metricFiltersExclude: [], //OPTIONAL (array of regex) any metrics matching these filters will be dropped
-    metricFiltersInclude: [/.*/] //OPTIONAL (array of regex) any metrics NOT matching these filters will be dropped
+    metricFiltersInclude: [/.*/] //OPTIONAL (array of regex) any metrics NOT matching at least one of these filters will be dropped
   }
 }
