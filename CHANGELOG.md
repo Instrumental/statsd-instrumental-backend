@@ -1,3 +1,6 @@
+### 0.12.1 [March 21st, 2017]
+* Introduce metric whitelist/blacklist via metricFiltersInclude and metricFiltersExclude options
+
 ### 0.11.4 [December 9th, 2016]
 * Fix a bug that caused `metricPrefix` to not always be applied.
 
