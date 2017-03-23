@@ -4,7 +4,7 @@ var config = require("../exampleConfig.js").config;
 var dummy_events =  { on: function(e){ } };
 var now = Math.round(new Date().getTime() / 1000);
 
-test('no filtering is done if no config specified', function (t) {
+test('no filtering is done if minimal config specified', function (t) {
   metrics = {
     counters: { 'my.test.1': 2805 },
     counter_rates: { 'my.test.1.rate': 280.5 },
@@ -12,7 +12,16 @@ test('no filtering is done if no config specified', function (t) {
     sets: { 'my.set.1': ['1','2','3'] }
   };
 
-  instrumental.init(now, config, dummy_events);
+  minimalConfig =  {
+    port: 8125,
+    backends: ["statsd-instrumental-backend"],
+    debug: false,
+    instrumental: {
+      key: "PROJECT_API_TOKEN"
+    }
+  }
+
+  instrumental.init(now, minimalConfig, dummy_events);
 
   payload = instrumental.build_payload(metrics);
   t.assert(payload.length === 4);
@@ -29,7 +38,7 @@ test('no filtering is done if emptyconfig specified', function (t) {
     sets: { 'my.set.1': ['1','2','3'] }
   };
 
-  config.instrumental.metricFilters = [];
+  config.instrumental.metricFiltersExclude = [];
   instrumental.init(now, config, dummy_events);
 
   payload = instrumental.build_payload(metrics);
@@ -39,16 +48,18 @@ test('no filtering is done if emptyconfig specified', function (t) {
   t.end();
 });
 
-test('regex filters work as expected', function (t) {
+test('regex filters work as expected, include and exclude', function (t) {
   metrics = {
-    counters: { 'filter.start.expression': 2805,
-                'filter.middle.expression': 2805 },
-    counter_rates: { 'filter.end.expression': 280.5 },
-    gauges: { 'end.expression.false.positive': 100 },
+    counters: { 'filter.start.expression': 100,
+                'filter.middle.expression': 100 },
+    counter_rates: { 'filter.end.expression': 10 },
+    gauges: { 'end.expression.false.positive': 100,
+              'we_whitelist_expressions_with_dots': 100 },
     sets: { 'false.positive.filter.start': ['1','2','3'] }
   };
 
-  config.instrumental.metricFilters = [/^filter.start.*/, /.*filter.end$/, /\.middle\./];
+  config.instrumental.metricFiltersExclude = [/^filter.start.*/, /.*filter.end$/, /\.middle\./];
+  config.instrumental.metricFiltersInclude = [/\./];
   instrumental.init(now, config, dummy_events);
 
   payload = instrumental.build_payload(metrics);
