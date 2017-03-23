@@ -34,6 +34,7 @@ StatsD config file.
     recordCounterRates: true,     // OPTIONAL (boolean) whether or not to send ".rate" metrics with counters, default true
     metricPrefix: "",             // OPTIONAL (string) this will be prepended (with a dot) to ALL of your metrics
     metricFilters: []             // OPTIONAL (array of regexes) any metrics matching these filters will be dropped
+    // for example, [/\.rate$/, /\.[^\.]*_99$/] would filter out counter rates and extra metrics for stats like upper_99, mean_99 and so on.
   }
 }
 ```
