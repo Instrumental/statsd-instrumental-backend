@@ -34,14 +34,14 @@ StatsD config file.
     recordCounterRates: true,     // OPTIONAL (boolean) whether or not to send ".rate" metrics with counters, default true
     metricPrefix: "",             // OPTIONAL (string) this will be prepended (with a dot) to ALL of your metrics
     metricFiltersExclude: [],     // OPTIONAL (array of regexes) any metrics matching these filters will be dropped. e.g, [/\.rate$/, /\.[^\.]*_99$/] would filter out counter rates and extra metrics for stats like upper_99, mean_99, etc.
-    metricFiltersInclude: [/.*/]  // OPTIONAL (array of regexes) any metrics _NOT_ matching at least one of these filters will be dropped
+    metricFiltersInclude: []      // OPTIONAL (array of regexes) any metrics _NOT_ matching at least one of these filters will be dropped
   }
 }
 ```
 
 ### Filtering Metrics
 
-Metrics can be filtered with either the `metricFiltersExclude` or `metricFiltersInclude` options. Note that for a metric to be sent, it must match at least one include *and* no excludes. In the case where no `metricFiltersInclude` option is provided, it defaults to `[/.*/]`.
+Metrics can be filtered with either the `metricFiltersExclude` or `metricFiltersInclude` options. Note that for a metric to be sent, it must match at least one include *and* no excludes.  An empty or missing metricFiltersInclude option will allow all metrics (assuming the exclusion filter does not exclude any).
 
 ## Enabling
 
