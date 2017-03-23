@@ -48,13 +48,59 @@ test('no filtering is done if emptyconfig specified', function (t) {
   t.end();
 });
 
+test('regex filters work as expected, exclude only', function (t) {
+  metrics = {
+    counters: { 'filter.start.expression': 100,
+                'filter.middle.expression': 100 },
+    counter_rates: { 'filter.start.expression.rate': 10,
+                     'filter.middle.expression.rate': 10},
+    gauges: { 'end.expression.false.positive': 100,
+              'true.positive.filter.end': 100 },
+    sets: { 'false.positive.filter.start': ['1','2','3'] }
+  };
+
+  config.instrumental.metricFiltersExclude = [/^filter.start.*/, /.*filter.end$/, /\.middle\./];
+  instrumental.init(now, config, dummy_events);
+
+  payload = instrumental.build_payload(metrics);
+  t.assert(payload.length === 2);
+
+  t.pass();
+  t.end();
+});
+
+test('regex filters work as expected, include only', function (t) {
+  metrics = {
+    counters: { 'has.some.dots': 100 },
+    counter_rates: { 'has.some.dots.rate': 10 },
+    gauges: { 'has_no_dots': 100 },
+    sets: { 'this.set.has.dots': ['1','2','3'] }
+  };
+
+  config.instrumental.metricFiltersExclude = [];
+  config.instrumental.metricFiltersInclude = [/\./];
+
+  instrumental.init(now, config, dummy_events);
+  payload = instrumental.build_payload(metrics);
+
+  t.assert(payload.length === 3);
+  payload.map(function(item){
+    t.assert(item.split(' ')[1] !== 'has_no_dots')
+  })
+
+  t.pass();
+  t.end();
+});
+
 test('regex filters work as expected, include and exclude', function (t) {
   metrics = {
     counters: { 'filter.start.expression': 100,
                 'filter.middle.expression': 100 },
-    counter_rates: { 'filter.end.expression': 10 },
+    counter_rates: { 'filter.start.expression.rate': 10,
+                     'filter.middle.expression.rate': 10},
     gauges: { 'end.expression.false.positive': 100,
-              'we_whitelist_expressions_with_dots': 100 },
+              'true.positive.filter.end': 100,
+              'has_no_dots': 100 },
     sets: { 'false.positive.filter.start': ['1','2','3'] }
   };
 
