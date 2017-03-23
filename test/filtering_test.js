@@ -24,6 +24,8 @@ test('no filtering is done if minimal config specified', function (t) {
   instrumental.init(now, minimalConfig, dummy_events);
 
   payload = instrumental.build_payload(metrics);
+  console.log(payload);
+
   t.assert(payload.length === 4);
 
   t.pass();
