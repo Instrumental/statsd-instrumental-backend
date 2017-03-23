@@ -1,3 +1,6 @@
+### 0.12.3 [March 21st, 2017]
+* Remove some logging that snuck in to production
+
 ### 0.12.2 [March 21st, 2017]
 * Make metric whitelisting functionality (`metricFiltersInclude`) more efficient in the no-op case
 
