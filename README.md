@@ -33,12 +33,15 @@ StatsD config file.
     timeout: 10000,               // OPTIONAL (integer), number of milliseconds to wait for establishing a connection to Instrumental before giving up, default 10s
     recordCounterRates: true,     // OPTIONAL (boolean) whether or not to send ".rate" metrics with counters, default true
     metricPrefix: "",             // OPTIONAL (string) this will be prepended (with a dot) to ALL of your metrics
-    metricFiltersExclude: [],     // OPTIONAL (array of regexes) any metrics matching these filters will be dropped
-    // for example, [/\.rate$/, /\.[^\.]*_99$/] would filter out counter rates and extra metrics for stats like upper_99, mean_99 and so on.
+    metricFiltersExclude: [],     // OPTIONAL (array of regexes) any metrics matching these filters will be dropped. e.g, [/\.rate$/, /\.[^\.]*_99$/] would filter out counter rates and extra metrics for stats like upper_99, mean_99, etc.
     metricFiltersInclude: [/.*/]  // OPTIONAL (array of regexes) any metrics _NOT_ matching these filters will be dropped
   }
 }
 ```
+
+### Filtering Metrics
+
+Metrics can be filtered with either the `metricFiltersExclude` or `metricFiltersInclude` options. Note that for a metric to be sent, it must match at least one include *and* no excludes. In the case where no `metricFiltersInclude` option is provided, it defaults to `[/.*/]`.
 
 ## Enabling
 
