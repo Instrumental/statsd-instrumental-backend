@@ -1,3 +1,6 @@
+### 0.12.4 [March 23rd, 2017]
+* Revert to string.match from regex.test.  String.match is available in more environments.
+
 ### 0.12.3 [March 21st, 2017]
 * Remove some logging that snuck in to production
 
