@@ -4,9 +4,10 @@ var originalConfig = require("../exampleConfig.js").config;
 var https = require("https");
 var EventEmitter = require('events');
 var timekeeper = require('timekeeper');
+var path = require("path");
 
 var timedOut = false;
-var timer, config;
+var timer, config, log;
 
 var test = function(name, testFunction){
   tape_test(name, function(t){
@@ -26,6 +27,9 @@ var test = function(name, testFunction){
 
     // Reset timekeeper so time behaves normally by default
     timekeeper.reset();
+
+    // Collect log messages for checking in tests
+    log = [];
 
     // Run the test
     testFunction(t);

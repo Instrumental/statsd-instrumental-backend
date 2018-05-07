@@ -4,9 +4,10 @@ var originalConfig = require("../exampleConfig.js").config;
 var https = require("https");
 var EventEmitter = require('events');
 var timekeeper = require('timekeeper');
+var path = require("path");
 
 var timedOut = false;
-var timer, config;
+var timer, config, log;
 
 var test = function(name, testFunction){
   tape_test(name, function(t){
@@ -27,6 +28,9 @@ var test = function(name, testFunction){
     // Reset timekeeper so time behaves normally by default
     timekeeper.reset();
 
+    // Collect log messages for checking in tests
+    log = [];
+
     // Run the test
     testFunction(t);
   });
@@ -46,10 +50,14 @@ function setup(t){
   });
 }
 
-function sendMetric(metricName, time){
-  dummy_events = new EventEmitter();
-  config.instrumental.metricPrefix = "";
-  instrumental.init(now, config, dummy_events);
+function sendMetric(metricName, time, options){
+  if(typeof(options) === 'undefined') options = {};
+  if (!options.skipInit) {
+    dummy_events = new EventEmitter();
+    config.instrumental.metricPrefix = "";
+    config.instrumental.log = function(){log.push(arguments)};
+    instrumental.init(now, config, dummy_events)
+  };
   metrics = {
     counters: {},
     counter_rates: {},
@@ -97,6 +105,69 @@ function checkForMetric(metricName, callbacks) {
   });
 }
 
+
+test('specifying a valid and working cert bundle works', function(t) {
+  setup(t);
+
+  oldTime = Math.round(new Date().getTime() / 1000);
+
+  config.instrumental.host = "smoke-collector.instrumentalapp.com";
+  config.instrumental.caCertFile = path.join(__dirname, "..", "certs", "instrumental.ca.pem");
+  now = Math.round(new Date().getTime() / 1000);
+  var metricName = "test.metric"+Math.random();
+  sendMetric(metricName, oldTime);
+
+  checkForMetric(metricName, {
+    found: function(){
+      t.pass();
+      t.end();
+    },
+    timeout: function(){
+      t.fail();
+      t.end();
+    },
+    error: function(){
+      t.fail();
+      t.end();
+    },
+  });
+});
+
+test('specifying a valid but not working cert bundle retries', function(t) {
+  setup(t);
+
+  oldTime = Math.round(new Date().getTime() / 1000);
+
+  config.instrumental.host = "smoke-collector.instrumentalapp.com";
+  config.instrumental.caCertFile = path.join(__dirname, "..", "certs", "instrumental.2018-08-19.ca.pem");
+  now = Math.round(new Date().getTime() / 1000);
+  var metricName = "test.metric"+Math.random();
+  sendMetric(metricName, oldTime);
+  sendMetric(metricName, oldTime, {skipInit: true});
+
+  var checkConnectionErrors = function() {
+    var connection_errors =
+      log.filter(function(entry){return JSON.stringify(entry).match(/UNABLE_TO_GET_ISSUER_CERT_LOCALLY/)});
+    t.equal(connection_errors.length, 2, "expected 2 connection attemps, 1 retry");
+    t.end();
+  };
+  setTimeout(checkConnectionErrors, 1000);
+});
+
+test('specifying an invalid cert bundle errors', function(t) {
+  setup(t);
+
+  oldTime = Math.round(new Date().getTime() / 1000);
+
+  config.instrumental.host = "smoke-collector.instrumentalapp.com";
+  config.instrumental.caCertFile = "non_existent_file";
+  now = Math.round(new Date().getTime() / 1000);
+  var metricName = "test.metric"+Math.random();
+  t.throws(function(){
+    sendMetric(metricName, oldTime);
+  }, /no such file/, "expected error finding non_existent_file");
+  t.end();
+});
 
 test('old agent works with new elb', function(t) {
   setup(t);
