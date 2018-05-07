@@ -19,8 +19,9 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "faucet": "0.0.1",
     "tape": "4.6.3",
-    "faucet": "0.0.1"
+    "timekeeper": "^2.1.1"
   },
   "main": "lib/instrumental.js",
   "directories": {
