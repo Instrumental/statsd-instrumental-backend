@@ -1,6 +1,36 @@
-var test = require('tape');
-var instrumental = require("../lib/instrumental.js");
-var config = require("../exampleConfig.js").config;
+var tape_test = require('tape');
+var instrumental;
+var originalConfig = require("../exampleConfig.js").config;
+var https = require("https");
+var EventEmitter = require('events');
+var timekeeper = require('timekeeper');
+
+var timedOut = false;
+var timer, config;
+
+var test = function(name, testFunction){
+  tape_test(name, function(t){
+    // Clear any state in the backend
+    delete require.cache[require.resolve('../lib/instrumental.js')]
+    instrumental = require("../lib/instrumental.js");
+
+    // Start with a fresh config based off the example with minor modifications
+    config = JSON.parse(JSON.stringify(originalConfig));
+    config.instrumental.key = process.env.INSTRUMENTAL_TEST_TOKEN;
+    config.instrumental.recordCounterRates = false;
+    config.instrumental.host = "collector.instrumentalapp.com";
+
+    // Setup state to check for timeouts polling the API
+    timedOut = false;
+    if (timer) clearTimeout(timer);
+
+    // Reset timekeeper so time behaves normally by default
+    timekeeper.reset();
+
+    // Run the test
+    testFunction(t);
+  });
+};
 
 test('counter_rate should not report if disabled in configuration', function (t) {
   metrics = {
@@ -15,7 +45,7 @@ test('counter_rate should not report if disabled in configuration', function (t)
 
   // Enable rate counters and ensure they are recorded
   payload = instrumental.build_payload(metrics);
-  
+
   // TODO: What's with the fucking space on the end of this string?
    t.assert(payload.indexOf("gauge_absolute my.test.1.rate 280.5 ") > -1, "Expected a rate metric, got: " + JSON.stringify(payload))
 
