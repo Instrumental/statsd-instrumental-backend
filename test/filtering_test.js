@@ -5,6 +5,7 @@ var https = require("https");
 var EventEmitter = require('events');
 var timekeeper = require('timekeeper');
 var path = require("path");
+var util = require("util");
 
 var timedOut = false;
 var timer, config, log;
@@ -20,6 +21,12 @@ var test = function(name, testFunction){
     config.instrumental.key = process.env.INSTRUMENTAL_TEST_TOKEN;
     config.instrumental.recordCounterRates = false;
     config.instrumental.host = "collector.instrumentalapp.com";
+    config.instrumental.debug = true; // allow log verification
+    config.instrumental.metricPrefix = "";
+    config.instrumental.log = function(){
+      // console.warn(util.format.apply(null, arguments));
+      log.push(util.format.apply(null, arguments));
+    };
 
     // Setup state to check for timeouts polling the API
     timedOut = false;

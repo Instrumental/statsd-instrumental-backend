@@ -1,2 +1,3 @@
 #!/bin/sh
-$(npm bin)/tape test/*.js | $(npm bin)/faucet
+echo "Testing using node version: $(node --version)"
+$(npm bin)/tape test/*_test.js | $(npm bin)/faucet
