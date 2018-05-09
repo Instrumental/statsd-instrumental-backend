@@ -118,7 +118,7 @@ test('specifying a valid and working cert bundle works', function(t) {
   oldTime = Math.round(new Date().getTime() / 1000);
 
   config.instrumental.host = "smoke-collector.instrumentalapp.com";
-  config.instrumental.caCertFile = path.join(__dirname, "..", "certs", "instrumental.ca.pem");
+  config.instrumental.caCertFile = path.join(__dirname, "..", "test", "fixtures", "instrumental.ca.pem");
   now = Math.round(new Date().getTime() / 1000);
   var metricName = "test.metric"+Math.random();
   sendMetric(metricName, oldTime);
@@ -145,7 +145,7 @@ test('specifying a valid but not working cert bundle retries', function(t) {
   oldTime = Math.round(new Date().getTime() / 1000);
 
   config.instrumental.host = "smoke-collector.instrumentalapp.com";
-  config.instrumental.caCertFile = path.join(__dirname, "..", "certs", "instrumental.2018-08-19.ca.pem");
+  config.instrumental.caCertFile = path.join(__dirname, "..", "test", "fixtures", "instrumental.2018-08-19.ca.pem");
   now = Math.round(new Date().getTime() / 1000);
   var metricName = "test.metric"+Math.random();
   sendMetric(metricName, oldTime);
@@ -257,19 +257,29 @@ test('fallback to newest cert bundle and stick if node default certs fail', func
     expectedSum: 6, // failures don't get sent
     found: function(){
       var cert_log_messages =
-        log.filter(function(entry){return entry.match(/cert/i)});
+        log.filter(function(entry){return entry.match(/\bcert/i)});
       var expected_messages = [
         "Adding node default ssl cert option",
-        "Found valid cert bundle: instrumental.2018-08-19",
-        "Found valid cert bundle: instrumental",
+        'Found valid cert bundle: equifax.2018-08-19',
+        'Found valid cert bundle: geotrust.2018-08-19',
+        'Found valid cert bundle: rapidssl.2018-08-19',
+        'Found valid cert bundle: digicert_intermediate',
+        'Found valid cert bundle: digicert_root',
+        'Found valid cert bundle: rapidssl',
         "Attempting new cert config: node default",
         "Using certs: node default", // 1
         "Using certs: node default", // 2
         "Using certs: node default", // fail
-        "Attempting new cert config: bundles instrumental.2018-08-19 instrumental",
-        "Using certs: bundles instrumental.2018-08-19 instrumental", // 3
-        "Using certs: bundles instrumental.2018-08-19 instrumental", // 4
-        "Using certs: bundles instrumental.2018-08-19 instrumental", // fail
+        "Attempting new cert config: bundles equifax.2018-08-19 geotrust.2018-08-19 rapidssl.2018-08-19 digicert_intermediate digicert_root rapidssl",
+
+        // 3
+        "Using certs: bundles equifax.2018-08-19 geotrust.2018-08-19 rapidssl.2018-08-19 digicert_intermediate digicert_root rapidssl",
+
+        // 4
+        "Using certs: bundles equifax.2018-08-19 geotrust.2018-08-19 rapidssl.2018-08-19 digicert_intermediate digicert_root rapidssl",
+
+        // fail
+        "Using certs: bundles equifax.2018-08-19 geotrust.2018-08-19 rapidssl.2018-08-19 digicert_intermediate digicert_root rapidssl",
         "Attempting new cert config: node default",
         "Using certs: node default", // 5
         "Using certs: node default"  // 6
@@ -362,12 +372,14 @@ test('future agent correctly expires cert and errors with old elb', function(t) 
     },
     timeout: function(){
       var cert_log_messages =
-        log.filter(function(entry){return entry.match(/cert/i) && !entry.match(/Error: unable to get/i)});
+        log.filter(function(entry){return entry.match(/\bcert/i) && !entry.match(/Error: unable to get/i)});
       var expected_messages = [
         "Skipping node default certificates",
-        "Found valid cert bundle: instrumental",
-        "Attempting new cert config: bundles instrumental",
-        "Using certs: bundles instrumental",
+        'Found valid cert bundle: digicert_intermediate',
+        'Found valid cert bundle: digicert_root',
+        'Found valid cert bundle: rapidssl',
+        "Attempting new cert config: bundles digicert_intermediate digicert_root rapidssl",
+        "Using certs: bundles digicert_intermediate digicert_root rapidssl",
       ];
       t.deepEqual(cert_log_messages, expected_messages, "expected to use node default certs");
       t.pass();
