@@ -1,5 +1,7 @@
 #!/bin/sh
 [ -z "$INSTRUMENTAL_TEST_TOKEN" ] && echo "You should supply a token via the INSTRUMENTAL_TEST_TOKEN environment variable when calling this script" && exit 1;
 
+echo "Consider looking at DEVELOPMENT.md and using nodenv. Perhaps update script/setup."
+echo
 echo "Testing using node version: $(node --version)"
 $(npm bin)/tape test/*_test.js | $(npm bin)/faucet

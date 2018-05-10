@@ -45,3 +45,11 @@ INSTRUMENTAL_TEST_TOKEN="<my_test_token>" faketime '2018-09-01 08:15:42' node st
 ```
 
 Be warned, this reportedly stopped working on MacOS at some point.
+
+
+### Testing
+
+If you have nodenv setup you can use something like this to test all installed node versions:
+```
+for i in `nodenv versions --bare`; do NODENV_VERSION=$i INSTRUMENTAL_TEST_TOKEN=<my_test_token> ./script/test &> /tmp/node_test_out_$i & done; wait; tail -n 1000 /tmp/node_test_out_*
+```
