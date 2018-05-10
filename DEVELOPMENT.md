@@ -53,3 +53,17 @@ If you have nodenv setup you can use something like this to test all installed n
 ```
 for i in `nodenv versions --bare`; do NODENV_VERSION=$i INSTRUMENTAL_TEST_TOKEN=<my_test_token> ./script/test &> /tmp/node_test_out_$i & done; wait; tail -n 1000 /tmp/node_test_out_*
 ```
+
+# Releasing
+
+1. Sign up for npmjs.com
+2. Pull latest master
+3. Merge feature branch(es) into master
+4. `./script/test`
+5. Increment version in `package.json`
+6. Update [CHANGELOG.md](CHANGELOG.md)
+7. Commit "Release version vX.Y.Z"
+8. Push to GitHub
+9. Tag version: `git tag 'vX.Y.Z' && git push --tags`
+10. `npm publish`
+11. Verify update on https://www.npmjs.com/package/statsd-instrumental-backend

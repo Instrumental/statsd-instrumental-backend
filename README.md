@@ -74,18 +74,4 @@ Contributing:
 * Commit. Do not mess with package.json, version, or history.
 * Send a pull request. Bonus points for topic branches.
 
-# Releasing
-
-1. Sign up for npmjs.com
-2. Pull latest master
-3. Merge feature branch(es) into master
-4. `./script/test`
-5. Increment version in `package.json`
-6. Update [CHANGELOG.md](CHANGELOG.md)
-7. Commit "Release version vX.Y.Z"
-8. Push to GitHub
-9. Tag version: `git tag 'vX.Y.Z' && git push --tags`
-10. `npm publish`
-11. Verify update on https://www.npmjs.com/package/statsd-instrumental-backend
-
 [statsd]: https://github.com/etsy/statsd
