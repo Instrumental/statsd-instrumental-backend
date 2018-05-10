@@ -2,7 +2,7 @@ var tape_test = require('tape');
 var instrumental;
 var originalConfig = require("../exampleConfig.js").config;
 var https = require("https");
-var EventEmitter = require('events');
+var EventEmitter = require('events').EventEmitter;
 var timekeeper = require('timekeeper');
 var path = require("path");
 var util = require("util");
@@ -152,7 +152,7 @@ test('specifying a valid but not working cert bundle retries', function(t) {
   sendMetric(metricName, oldTime, {skipInit: true});
   var checkConnectionErrors = function() {
     var connection_errors =
-      log.filter(function(entry){return entry.match(/UNABLE_TO_GET_ISSUER_CERT_LOCALLY/)});
+      log.filter(function(entry){return entry.match(/Client error:/)});
     t.equal(connection_errors.length, 2, "expected 2 connection attemps, 1 retry");
     t.end();
   };
@@ -371,7 +371,12 @@ test('future agent correctly expires cert and errors with old elb', function(t) 
     },
     timeout: function(){
       var cert_log_messages =
-        log.filter(function(entry){return entry.match(/\bcert/i) && !entry.match(/Error: unable to get/i)});
+        log.filter(function(entry){
+          return entry.match(/\bcert/i) &&
+            !entry.match(/Error: unable to get/i) &&
+            !entry.match(/Error: CERT_UNTRUSTED/i) &&
+            !entry.match(/Error: certificate not trusted/i);
+        });
       var expected_messages = [
         "Skipping node default certificates",
         'Found valid cert bundle: digicert_intermediate',
