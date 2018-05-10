@@ -6,6 +6,7 @@ var EventEmitter = require('events').EventEmitter;
 var timekeeper = require('timekeeper');
 var path = require("path");
 var util = require("util");
+var fs   = require("fs");
 
 var timedOut = false;
 var timer, config, log;
@@ -117,8 +118,16 @@ test('specifying a valid and working cert bundle works', function(t) {
 
   oldTime = Math.round(new Date().getTime() / 1000);
 
+  var certs = [];
+  var certDir = path.join(__dirname, "..", "certs/");
+  fs.readdirSync(certDir).forEach(function(filename) {
+    if (filename.match(/ca\.pem$/) && !filename.match(/20/)) {
+      certs.push(certDir + filename);
+    }
+  });
+
   config.instrumental.host = "smoke-collector.instrumentalapp.com";
-  config.instrumental.caCertFile = path.join(__dirname, "..", "test", "fixtures", "instrumental.ca.pem");
+  config.instrumental.caCertFiles = certs;
   now = Math.round(new Date().getTime() / 1000);
   var metricName = "test.metric"+Math.random();
   sendMetric(metricName, oldTime);
@@ -144,8 +153,16 @@ test('specifying a valid but not working cert bundle retries', function(t) {
 
   oldTime = Math.round(new Date().getTime() / 1000);
 
+  var certs = [];
+  var certDir = path.join(__dirname, "..", "certs/");
+  fs.readdirSync(certDir).forEach(function(filename) {
+    if (filename.match(/ca\.pem$/) && filename.match(/20/)) {
+      certs.push(certDir + filename);
+    }
+  });
+
   config.instrumental.host = "smoke-collector.instrumentalapp.com";
-  config.instrumental.caCertFile = path.join(__dirname, "..", "test", "fixtures", "instrumental.2018-08-19.ca.pem");
+  config.instrumental.caCertFiles = certs;
   now = Math.round(new Date().getTime() / 1000);
   var metricName = "test.metric"+Math.random();
   sendMetric(metricName, oldTime);
@@ -165,7 +182,7 @@ test('specifying an invalid cert bundle errors', function(t) {
   oldTime = Math.round(new Date().getTime() / 1000);
 
   config.instrumental.host = "smoke-collector.instrumentalapp.com";
-  config.instrumental.caCertFile = "non_existent_file";
+  config.instrumental.caCertFiles = ["non_existent_file"];
   var metricName = "test.metric"+Math.random();
   t.throws(function(){
     sendMetric(metricName, oldTime);

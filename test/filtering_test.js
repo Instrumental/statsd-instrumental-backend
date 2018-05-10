@@ -6,6 +6,7 @@ var EventEmitter = require('events');
 var timekeeper = require('timekeeper');
 var path = require("path");
 var util = require("util");
+var fs   = require("fs");
 
 var timedOut = false;
 var timer, config, log;
