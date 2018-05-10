@@ -1,3 +1,8 @@
+### 0.13.0 [May 10th, 2018]
+* Add new certificates that will work after the current intermediate certs expire later this year
+* Add a configuration option to enable custom certificates
+* Add the ability to use included node certs, and make it the default (with included certs as a fallback)
+
 ### 0.12.4 [March 23rd, 2017]
 * Revert to string.match from regex.test.  String.match is available in more environments.
 
