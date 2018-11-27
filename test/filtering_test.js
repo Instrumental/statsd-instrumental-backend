@@ -1,48 +1,13 @@
-var tape_test = require('tape');
-var instrumental;
-var originalConfig = require("../exampleConfig.js").config;
-var https = require("https");
-var EventEmitter = require('events');
+var TestHelper = require("./test_helper");
 var timekeeper = require('timekeeper');
 var path = require("path");
 var util = require("util");
 var fs   = require("fs");
 
-var timedOut = false;
-var timer, config, log;
-
-var test = function(name, testFunction){
-  tape_test(name, function(t){
-    // Clear any state in the backend
-    delete require.cache[require.resolve('../lib/instrumental.js')]
-    instrumental = require("../lib/instrumental.js");
-
-    // Start with a fresh config based off the example with minor modifications
-    config = JSON.parse(JSON.stringify(originalConfig));
-    config.instrumental.key = process.env.INSTRUMENTAL_TEST_TOKEN;
-    config.instrumental.recordCounterRates = false;
-    config.instrumental.host = "collector.instrumentalapp.com";
-    config.instrumental.debug = true; // allow log verification
-    config.instrumental.metricPrefix = "";
-    config.instrumental.log = function(){
-      // console.warn(util.format.apply(null, arguments));
-      log.push(util.format.apply(null, arguments));
-    };
-
-    // Setup state to check for timeouts polling the API
-    timedOut = false;
-    if (timer) clearTimeout(timer);
-
-    // Reset timekeeper so time behaves normally by default
-    timekeeper.reset();
-
-    // Collect log messages for checking in tests
-    log = [];
-
-    // Run the test
-    testFunction(t);
-  });
-};
+test = TestHelper.test;
+setup = TestHelper.setup;
+sendMetric = TestHelper.sendMetric;
+checkForMetric = TestHelper.checkForMetric;
 
 test('no filtering is done if minimal config specified', function (t) {
   metrics = {
@@ -63,9 +28,9 @@ test('no filtering is done if minimal config specified', function (t) {
 
   var now = Math.round(new Date().getTime() / 1000);
   var dummy_events =  { on: function(e){ } };
-  instrumental.init(now, minimalConfig, dummy_events);
+  TestHelper.instrumental.init(now, minimalConfig, dummy_events);
 
-  payload = instrumental.build_payload(metrics);
+  payload = TestHelper.instrumental.build_payload(metrics);
 
   t.assert(payload.length === 4);
 
@@ -73,7 +38,7 @@ test('no filtering is done if minimal config specified', function (t) {
   t.end();
 });
 
-test('no filtering is done if emptyconfig specified', function (t) {
+test('no filtering is done if empty config specified', function (t) {
   metrics = {
     counters: { 'my.test.1': 2805 },
     counter_rates: { 'my.test.1.rate': 280.5 },
@@ -81,13 +46,13 @@ test('no filtering is done if emptyconfig specified', function (t) {
     sets: { 'my.set.1': ['1','2','3'] }
   };
 
-  config.instrumental.recordCounterRates = true;
-  config.instrumental.metricFiltersExclude = [];
+  TestHelper.config.instrumental.recordCounterRates = true;
+  TestHelper.config.instrumental.metricFiltersExclude = [];
   var now = Math.round(new Date().getTime() / 1000);
   var dummy_events =  { on: function(e){ } };
-  instrumental.init(now, config, dummy_events);
+  TestHelper.instrumental.init(now, TestHelper.config, dummy_events);
 
-  payload = instrumental.build_payload(metrics);
+  payload = TestHelper.instrumental.build_payload(metrics);
   t.assert(payload.length === 4);
 
   t.pass();
@@ -105,12 +70,12 @@ test('regex filters work as expected, exclude only', function (t) {
     sets: { 'false.positive.filter.start': ['1','2','3'] }
   };
 
-  config.instrumental.metricFiltersExclude = [/^filter.start.*/, /.*filter.end$/, /\.middle\./];
+  TestHelper.config.instrumental.metricFiltersExclude = [/^filter.start.*/, /.*filter.end$/, /\.middle\./];
   var now = Math.round(new Date().getTime() / 1000);
   var dummy_events =  { on: function(e){ } };
-  instrumental.init(now, config, dummy_events);
+  TestHelper.instrumental.init(now, TestHelper.config, dummy_events);
 
-  payload = instrumental.build_payload(metrics);
+  payload = TestHelper.instrumental.build_payload(metrics);
   t.assert(payload.length === 2);
 
   t.pass();
@@ -126,14 +91,14 @@ test('regex filters work as expected, include only', function (t) {
     sets: { 'this.set.has.dots': ['1','2','3'] }
   };
 
-  config.instrumental.recordCounterRates = true;
-  config.instrumental.metricFiltersExclude = [];
-  config.instrumental.metricFiltersInclude = [/\./, /special/];
+  TestHelper.config.instrumental.recordCounterRates = true;
+  TestHelper.config.instrumental.metricFiltersExclude = [];
+  TestHelper.config.instrumental.metricFiltersInclude = [/\./, /special/];
 
   var now = Math.round(new Date().getTime() / 1000);
   var dummy_events =  { on: function(e){ } };
-  instrumental.init(now, config, dummy_events);
-  payload = instrumental.build_payload(metrics);
+  TestHelper.instrumental.init(now, TestHelper.config, dummy_events);
+  payload = TestHelper.instrumental.build_payload(metrics);
 
   t.assert(payload.length === 4);
   payload.map(function(item){
@@ -156,13 +121,13 @@ test('regex filters work as expected, include and exclude', function (t) {
     sets: { 'false.positive.filter.start': ['1','2','3'] }
   };
 
-  config.instrumental.metricFiltersExclude = [/^filter.start.*/, /.*filter.end$/, /\.middle\./];
-  config.instrumental.metricFiltersInclude = [/\./];
+  TestHelper.config.instrumental.metricFiltersExclude = [/^filter.start.*/, /.*filter.end$/, /\.middle\./];
+  TestHelper.config.instrumental.metricFiltersInclude = [/\./];
   var now = Math.round(new Date().getTime() / 1000);
   var dummy_events =  { on: function(e){ } };
-  instrumental.init(now, config, dummy_events);
+  TestHelper.instrumental.init(now, TestHelper.config, dummy_events);
 
-  payload = instrumental.build_payload(metrics);
+  payload = TestHelper.instrumental.build_payload(metrics);
   t.assert(payload.length === 2);
 
   t.pass();
