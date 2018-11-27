@@ -126,7 +126,7 @@ test('before cert expiration, fallback to newest cert bundle and stick if node d
 
   TestHelper.config.instrumental.tlsVariationTimeout = 500;
 
-  var timeBetweenSends = 1000;
+  var timeBetweenSends = 2000;
   var actions = [];
 
   // node default certs
@@ -229,7 +229,7 @@ test('after cert expiration, fallback to newest cert bundle and stick if node de
 
   TestHelper.config.instrumental.tlsVariationTimeout = 500;
 
-  var timeBetweenSends = 1000;
+  var timeBetweenSends = 2000;
   var actions = [];
 
   // node default certs
