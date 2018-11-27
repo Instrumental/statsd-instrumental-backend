@@ -44,6 +44,60 @@ var test = function(name, testFunction){
   });
 };
 
+function sendMetric(metricName, time, options){
+  if(typeof(options) === 'undefined') options = {};
+  if (!options.skipInit) {
+    dummy_events = new EventEmitter();
+    instrumental.init(now, config, dummy_events)
+  };
+  metrics = {
+    counters: {},
+    counter_rates: {},
+    timer_data: {},
+    gauges: {},
+    sets: {},
+  };
+  metrics.counters[metricName] = 1;
+  dummy_events.emit("flush", time, metrics);
+}
+
+function checkForMetric(metricName, options) {
+  var httpOptions = {
+    hostname: 'instrumentalapp.com',
+    path: '/api/2/metrics/'+metricName,
+    headers: {
+      'X-Instrumental-Token': process.env.INSTRUMENTAL_TEST_TOKEN,
+    }
+  };
+  var req = https.get(httpOptions, function(res){
+    // console.warn('statusCode:', res.statusCode);
+    // console.warn('headers:', res.headers);
+    var body = '';
+    res.on('data', function(chunk) {
+      body += chunk;
+    });
+    res.on('end', function() {
+      // console.warn(body);
+      var data = JSON.parse(body).response.metrics[0].values.data;
+      var last_point = data[data.length-1];
+      var expectedSum = options.expectedSum || 1;
+      if (last_point.s == expectedSum) {
+        options.found();
+      } else {
+        if (timedOut) {
+          options.timeout();
+        } else {
+          setTimeout(function(){checkForMetric(metricName, options)}, 1000);
+        }
+      }
+    });
+  });
+  req.on('error', function(e){
+    console.error(e.message);
+    options.error();
+  });
+}
+
 test('counter_rate should not report if disabled in configuration', function (t) {
   metrics = {
     counters: { 'my.test.1': 2805 },
@@ -111,4 +165,49 @@ test('metricPrefix ending with dots wont send double dots', function (t) {
   t.assert(payload.indexOf("increment testprefix.my.test.1 2805 ") > -1, "Metric name was not prefixed properly (got " + JSON.stringify(payload) + ")");
 
   t.end();
+});
+
+test("by default no messages are logged on every meetric send", function (t) {
+  oldTime = Math.round(new Date().getTime() / 1000);
+
+  // the default config value in production, though the default in test is true
+  config.debug = false;
+
+  var metricName = "test.metric"+Math.random();
+  sendMetric(metricName, oldTime);
+  sendMetric(metricName, oldTime, {skipInit: true});
+  sendMetric(metricName, oldTime, {skipInit: true});
+  sendMetric(metricName, oldTime, {skipInit: true});
+  sendMetric(metricName, oldTime, {skipInit: true});
+  sendMetric(metricName, oldTime, {skipInit: true});
+
+  checkForMetric(metricName, {
+    expectedSum: 6, // failures don't get sent
+    found: function(){
+      var cert_log_messages =
+        log.filter(function(entry){return true});
+      var expected_messages = [
+        "Adding node default ssl cert option",
+        "Found valid cert bundle: digicert_intermediate",
+        "Found valid cert bundle: digicert_root",
+        "Found valid cert bundle: rapidssl",
+        "Adding known ssl bundles: digicert_intermediate digicert_root rapidssl",
+        "Connecting to collector.instrumentalapp.com:8001",
+        "Attempting new cert config: node default",
+      ];
+      t.deepEqual(cert_log_messages, expected_messages, "expected to use node default certs");
+      t.pass();
+      t.end();
+    },
+    timeout: function(){
+      var cert_log_messages =
+        log.filter(function(entry){return true});
+      t.fail(JSON.stringify(cert_log_messages) + "\n\n");
+      t.end();
+    },
+    error: function(){
+      t.fail();
+      t.end();
+    },
+  });
 });
