@@ -22,7 +22,7 @@ var test = function(name, testFunction){
     config.instrumental.key = process.env.INSTRUMENTAL_TEST_TOKEN;
     config.instrumental.recordCounterRates = false;
     config.instrumental.host = "collector.instrumentalapp.com";
-    config.instrumental.debug = true; // allow log verification
+    config.debug = true; // allow log verification
     config.instrumental.metricPrefix = "";
     config.instrumental.log = function(){
       // console.warn(util.format.apply(null, arguments));
