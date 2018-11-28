@@ -1,3 +1,6 @@
+### 0.13.1 [November 28th, 2018]
+* Reduce logging with production debug settings
+
 ### 0.13.0 [May 10th, 2018]
 * Add new certificates that will work after the current intermediate certs expire later this year
 * Add a configuration option to enable custom certificates
