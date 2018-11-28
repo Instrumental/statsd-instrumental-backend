@@ -78,7 +78,7 @@ test('metricPrefix ending with dots wont send double dots', function (t) {
   t.end();
 });
 
-test("by default no messages are logged on every meetric send", function (t) {
+test("with default production debug confirguation no messages are logged on every metric send", function (t) {
   oldTime = Math.round(new Date().getTime() / 1000);
 
   // the default config value in production, though the default in test is true
