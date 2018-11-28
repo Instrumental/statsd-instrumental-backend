@@ -4,10 +4,10 @@ var path = require("path");
 var util = require("util");
 var fs   = require("fs");
 
-test = TestHelper.test;
-setup = TestHelper.setup;
-sendMetric = TestHelper.sendMetric;
-checkForMetric = TestHelper.checkForMetric;
+var test = TestHelper.test;
+var setup = TestHelper.setup;
+var sendMetric = TestHelper.sendMetric;
+var checkForMetric = TestHelper.checkForMetric;
 
 test('counter_rate should not report if disabled in configuration', function (t) {
   metrics = {
